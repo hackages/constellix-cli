@@ -11,14 +11,13 @@
   `get`         Get one or all dns records/domains
 
 ### Flags:
-  -c, --command-config string   Provide a config file (default "config.toml")
-
-
+  `-c, --command-config [string]`   Provide a config file (default "config.toml")
 &nbsp;  
 ## Create a dns records of types CNAME or A
 
 ### Usage:
   `constellix-cli create [flags]`
+  
   `constellix-cli create [command]`
 
 ### Available Commands:
@@ -26,14 +25,13 @@
   `cname`       Create a dns record of type CNAME
 
 ### Global Flags:
-  -c, --command-config string   Provide a config file (default "config.toml")
-
-
+  `-c, --command-config [string]`   Provide a config file (default "config.toml")
 &nbsp;  
 ## Delete a dns record by its name
 
 ### Usage:
   `constellix-cli delete [flags]`
+  
   `constellix-cli delete [command]`
 
 ### Available Commands:
@@ -41,7 +39,7 @@
   `cname`       Delete a dns record of type CNAME
 
 ### Global Flags:
-  -c, --command-config string   Provide a config file (default "config.toml")
+  `-c, --command-config [string]`   Provide a config file (default "config.toml")
 
 
 &nbsp;  
