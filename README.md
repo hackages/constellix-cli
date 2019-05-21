@@ -7,7 +7,9 @@
 
 ### Available Commands:
   `create`      Create a dns records of types CNAME or A
+  
   `delete`      Delete a dns record by its name
+  
   `get`         Get one or all dns records/domains
 
 ### Flags:
@@ -22,6 +24,7 @@
 
 ### Available Commands:
   `a`           Create a dns record of type A
+  
   `cname`       Create a dns record of type CNAME
 
 ### Global Flags:
@@ -36,6 +39,7 @@
 
 ### Available Commands:
   `a`           Delete a dns record of type A
+  
   `cname`       Delete a dns record of type CNAME
 
 ### Global Flags:
@@ -47,16 +51,20 @@
 
 ### Usage:
   `constellix-cli get [flags]`
+  
   `constellix-cli get [command]`
 
 ### Available Commands:
   `a-id`        Get an A record id from a domain
+  
   `all`         Get all records in a domain
+  
   `cname-id`    Get a CNAME record id from a domain
+  
   `domain`      Get all domains
 
 ### Global Flags:
-  -c, --command-config string   Provide a config file (default "config.toml")
+  `-c, --command-config [string]`   Provide a config file (default "config.toml")
  
 
 &nbsp;  
