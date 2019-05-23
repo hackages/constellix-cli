@@ -7,7 +7,20 @@ import (
 	"strings"
 )
 
-func DeleteNS(value string, c Config) {
+func DeleteNS(isValueId bool, isValueName bool, value string, c Config) {
+	method := "DELETE"
+	payload := strings.NewReader("")
+
+	if isValueId {
+		deleteNsById(value, method, payload, c)
+	} else if isValueName {
+		deleteNsByName(value, method, payload, c)
+	} else {
+		deleteNsByValue(value, method, payload, c)
+	}
+}
+
+func deleteNsByValue(value string, method string, payload *strings.Reader, c Config) {
 	var validValue = value
 	var nsID = 0
 
@@ -18,9 +31,33 @@ func DeleteNS(value string, c Config) {
 		nsID = GetId(value, c)
 	}
 
-	url := "https://api.dns.constellix.com/v1/domains/" + c.Constellix.Domain + "/records/ns/" + strconv.Itoa(nsID) + ""
-	method := "DELETE"
-	payload := strings.NewReader("")
+	url := BASE_URL + c.Constellix.Domain + "/records/ns/" + strconv.Itoa(nsID) + ""
+
+	send(url, method, payload, c)
+
+	if filepath.Base(url) == "0" {
+		fmt.Println("Error: Wrong id -> ", url)
+	} else {
+		fmt.Println("Domain record deleted successfully ", url)
+	}
+}
+
+func deleteNsByName(name string, method string, payload *strings.Reader, c Config) {
+	nsID := GetIdByName(name, c)
+
+	url := BASE_URL + c.Constellix.Domain + "/records/ns/" + strconv.Itoa(nsID) + ""
+
+	send(url, method, payload, c)
+
+	if filepath.Base(url) == "0" {
+		fmt.Println("Error: Wrong id -> ", url)
+	} else {
+		fmt.Println("Domain record deleted successfully ", url)
+	}
+}
+
+func deleteNsById(nsID string, method string, payload *strings.Reader, c Config) {
+	url := BASE_URL + c.Constellix.Domain + "/records/ns/" + nsID
 
 	send(url, method, payload, c)
 
@@ -32,15 +69,15 @@ func DeleteNS(value string, c Config) {
 }
 
 func CreateNS(value string, name string, c Config) {
-	url := "https://api.dns.constellix.com/v1/domains/" + c.Constellix.Domain + "/records/ns"
+	url := BASE_URL + c.Constellix.Domain + "/records/ns"
 	method := "POST"
 
-	if !strings.HasSuffix(".", value) {
-		validValue := value + "."
-		payload := strings.NewReader("{\n  \"name\": \"" + name + "\",\n  \"ttl\": \"1800\"\n,\n  \"roundRobin\": [\n{\n  \"value\": \"" + validValue + "\"\n }\n]}")
+	if strings.HasSuffix(".", value) {
+		payload := strings.NewReader("{\n  \"name\": \"" + name + "\",\n  \"ttl\": \"1800\"\n,\n  \"roundRobin\": [\n{\n  \"value\": \"" + value + "\"\n }\n]}")
 		send(url, method, payload, c)
 	} else {
-		payload := strings.NewReader("{\n  \"name\": \"" + name + "\",\n  \"ttl\": \"1800\"\n,\n  \"roundRobin\": [\n{\n  \"value\": \"" + value + "\"\n }\n]}")
+		validValue := value + "."
+		payload := strings.NewReader("{\n  \"name\": \"" + name + "\",\n  \"ttl\": \"1800\"\n,\n  \"roundRobin\": [\n{\n  \"value\": \"" + validValue + "\"\n }\n]}")
 		send(url, method, payload, c)
 	}
 }

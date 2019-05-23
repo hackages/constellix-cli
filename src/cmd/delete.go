@@ -59,33 +59,37 @@ var (
 
 func deleteCname(cmd *cobra.Command, args []string) {
 	file, _ := cmd.Flags().GetString("command-config")
+	isDeletedById, _ := cmd.Flags().GetBool("id")
+
 	c := F.InitConfig(file)
 
 	if len(args) == 1 {
-		F.DeleteCNAME(args[0], c)
+		F.DeleteCNAME(isDeletedById, args[0], c)
 	} else if len(args) > 1 {
 		for i, _ := range args {
-			F.DeleteCNAME(args[i], c)
+			F.DeleteCNAME(isDeletedById, args[i], c)
 		}
 	}
 }
 
 func deleteA(cmd *cobra.Command, args []string) {
 	file, _ := cmd.Flags().GetString("command-config")
+	isDeletedById, _ := cmd.Flags().GetBool("id")
+	isDeletedByName, _ := cmd.Flags().GetBool("name")
+
 	c := F.InitConfig(file)
 
-	if len(args) >= 1 {
-		F.DeleteA(args[0], c)
-	}
+	F.DeleteA(isDeletedById, isDeletedByName, args[0], c)
 }
 
 func deleteNS(cmd *cobra.Command, args []string) {
 	file, _ := cmd.Flags().GetString("command-config")
+	isDeletedById, _ := cmd.Flags().GetBool("id")
+	isDeletedByName, _ := cmd.Flags().GetBool("name")
+
 	c := F.InitConfig(file)
 
-	if len(args) >= 1 {
-		F.DeleteNS(args[0], c)
-	}
+	F.DeleteNS(isDeletedById, isDeletedByName, args[0], c)
 }
 
 func init() {
@@ -98,4 +102,13 @@ func init() {
 	deleteCmd.AddCommand(deleteACmd)
 	deleteCmd.AddCommand(deleteCNAMECmd)
 	deleteCmd.AddCommand(deleteNSCmd)
+
+	// Persistent flags
+	deleteCmd.PersistentFlags().BoolP("id", "i", false, "Toggle delete record by id")
+
+	// Local flags
+	deleteaCmd.Flags().BoolP("name", "n", false, "Toggle delete A record by name")
+	deleteACmd.Flags().BoolP("name", "n", false, "Toggle delete A record by name")
+	deleteNSCmd.Flags().BoolP("name", "n", false, "Toggle delete NS record by name")
+	deletensCmd.Flags().BoolP("name", "n", false, "Toggle delete NS record by name")
 }

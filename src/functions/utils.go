@@ -6,17 +6,11 @@ import (
 	"strings"
 )
 
-const BASE_URL = "https://api.dns.constellix.com/v1/domains/"
-const OPTIONS = "?%20&offset=0&max=10&sort=name&order=asc"
-
-const CNAME = "cname"
-const A = "A"
-const NS = "ns"
-
 var tabWithoutValue []TabsWithoutValue
 var tabWithArrayValue []TabsWithArrayValue
 var tabWithObjectValue []TabsWithObjectValue
 
+// Get id of record by its value(/name for CNAME records)
 func GetId(value string, c Config) int {
 	urlWithObjectValue := BASE_URL + c.Constellix.Domain + "/records/" + NS + OPTIONS
 	urlWithArrayValue := BASE_URL + c.Constellix.Domain + "/records/" + A + OPTIONS
@@ -31,24 +25,54 @@ func GetId(value string, c Config) int {
 	getAllForType(urlWithObjectValue, method, payload, c, "tabWithObjectValue")
 	getAllForType(urlWithArrayValue, method, payload, c, "tabWithArrayValue")
 
-	for i := 0; i < len(tabWithArrayValue); i++ {
-		if tabWithArrayValue[i].Value[0] == value {
-			valueID = tabWithArrayValue[i].Id
+	for _, i := range tabWithArrayValue {
+		if i.Value[0] == value {
+			valueID = i.Id
 		}
 	}
 
 	if valueID == 0 {
-		for i := 0; i < len(tabWithObjectValue); i++ {
-			if tabWithObjectValue[i].Value[0].Value == value {
-				valueID = tabWithObjectValue[i].Id
+		for _, i := range tabWithObjectValue {
+			if i.Value[0].Value == value {
+				valueID = i.Id
 			}
 		}
 	}
 
 	if valueID == 0 {
-		for i := 0; i < len(tabWithoutValue); i++ {
-			if tabWithoutValue[i].Name == value {
-				valueID = tabWithoutValue[i].Id
+		for _, i := range tabWithoutValue {
+			if i.Name == value {
+				valueID = i.Id
+			}
+		}
+	}
+
+	return valueID
+}
+
+// Get id of record by its name
+func GetIdByName(name string, c Config) int {
+	urlWithObjectValue := BASE_URL + c.Constellix.Domain + "/records/" + NS + OPTIONS
+	urlWithArrayValue := BASE_URL + c.Constellix.Domain + "/records/" + A + OPTIONS
+
+	method := "GET"
+	payload := strings.NewReader("")
+
+	valueID := 0
+
+	getAllForType(urlWithObjectValue, method, payload, c, "tabWithObjectValue")
+	getAllForType(urlWithArrayValue, method, payload, c, "tabWithArrayValue")
+
+	for _, i := range tabWithArrayValue {
+		if i.Name == name {
+			valueID = i.Id
+		}
+	}
+
+	if valueID == 0 {
+		for _, i := range tabWithObjectValue {
+			if i.Name == name {
+				valueID = i.Id
 			}
 		}
 	}
