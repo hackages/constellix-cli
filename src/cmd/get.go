@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	F "../functions"
 	"github.com/spf13/cobra"
 )
@@ -97,11 +99,12 @@ func getAll(cmd *cobra.Command, args []string) {
 	F.GetAll(c)
 }
 
-func getId(cmd *cobra.Command, args []string) int {
+func getId(cmd *cobra.Command, args []string) {
 	file, _ := cmd.Flags().GetString("command-config")
 	c := F.InitConfig(file)
 
 	nameId := F.GetId(args[0], c)
+	fmt.Println(nameID)
 }
 
 func init() {
