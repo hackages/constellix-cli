@@ -83,13 +83,24 @@ var (
 		Hidden: true,
 		Run:    getId,
 	}
+
+	getDomainIdCmd = &cobra.Command{
+		Use:   "domain-id",
+		Args:  cobra.MinimumNArgs(1),
+		Short: "Get a domain id from its name",
+		Run:   getDomainId,
+	}
 )
 
 func getDomain(cmd *cobra.Command, args []string) {
 	file, _ := cmd.Flags().GetString("command-config")
 	c := F.InitConfig(file)
 
-	F.GetAllDomain(c)
+	domains := F.GetAllDomain(c)
+
+	for _, i := range domains {
+		fmt.Printf("%v\t %v \n", i.Id, i.Name)
+	}
 }
 
 func getAll(cmd *cobra.Command, args []string) {
@@ -104,7 +115,15 @@ func getId(cmd *cobra.Command, args []string) {
 	c := F.InitConfig(file)
 
 	nameId := F.GetId(args[0], c)
-	fmt.Println(nameID)
+	fmt.Println(nameId)
+}
+
+func getDomainId(cmd *cobra.Command, args []string) {
+	file, _ := cmd.Flags().GetString("command-config")
+	c := F.InitConfig(file)
+
+	domainId := F.GetDomainId(args[0], c)
+	fmt.Println(domainId)
 }
 
 func init() {
@@ -114,6 +133,7 @@ func init() {
 	getCmd.AddCommand(getCnameIdCmd)
 	getCmd.AddCommand(getaIdCmd)
 	getCmd.AddCommand(getnsIdCmd)
+	getCmd.AddCommand(getDomainIdCmd)
 
 	// Aliases
 	getCmd.AddCommand(getALLCmd)

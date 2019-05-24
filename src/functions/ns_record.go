@@ -8,19 +8,19 @@ import (
 )
 
 func DeleteNS(isValueId bool, isValueName bool, value string, c Config) {
-	method := "DELETE"
 	payload := strings.NewReader("")
 
 	if isValueId {
-		deleteNsById(value, method, payload, c)
+		deleteNsById(value, payload, c)
 	} else if isValueName {
-		deleteNsByName(value, method, payload, c)
+		deleteNsByName(value, payload, c)
 	} else {
-		deleteNsByValue(value, method, payload, c)
+		deleteNsByValue(value, payload, c)
 	}
 }
 
-func deleteNsByValue(value string, method string, payload *strings.Reader, c Config) {
+// Delete NS record by its DNS domain value
+func deleteNsByValue(value string, payload *strings.Reader, c Config) {
 	var validValue = value
 	var nsID = 0
 
@@ -33,7 +33,7 @@ func deleteNsByValue(value string, method string, payload *strings.Reader, c Con
 
 	url := BASE_URL + c.Constellix.Domain + "/records/ns/" + strconv.Itoa(nsID) + ""
 
-	send(url, method, payload, c)
+	send(url, DELETE, payload, c)
 
 	if filepath.Base(url) == "0" {
 		fmt.Println("Error: Wrong id -> ", url)
@@ -42,12 +42,13 @@ func deleteNsByValue(value string, method string, payload *strings.Reader, c Con
 	}
 }
 
-func deleteNsByName(name string, method string, payload *strings.Reader, c Config) {
+// Delete NS record by its name
+func deleteNsByName(name string, payload *strings.Reader, c Config) {
 	nsID := GetIdByName(name, c)
 
 	url := BASE_URL + c.Constellix.Domain + "/records/ns/" + strconv.Itoa(nsID) + ""
 
-	send(url, method, payload, c)
+	send(url, DELETE, payload, c)
 
 	if filepath.Base(url) == "0" {
 		fmt.Println("Error: Wrong id -> ", url)
@@ -56,10 +57,11 @@ func deleteNsByName(name string, method string, payload *strings.Reader, c Confi
 	}
 }
 
-func deleteNsById(nsID string, method string, payload *strings.Reader, c Config) {
+// Delete NS record by its id
+func deleteNsById(nsID string, payload *strings.Reader, c Config) {
 	url := BASE_URL + c.Constellix.Domain + "/records/ns/" + nsID
 
-	send(url, method, payload, c)
+	send(url, DELETE, payload, c)
 
 	if filepath.Base(url) == "0" {
 		fmt.Println("Error: Wrong id -> ", url)
@@ -68,16 +70,16 @@ func deleteNsById(nsID string, method string, payload *strings.Reader, c Config)
 	}
 }
 
+// Create NS record with an optional name
 func CreateNS(value string, name string, c Config) {
 	url := BASE_URL + c.Constellix.Domain + "/records/ns"
-	method := "POST"
 
 	if strings.HasSuffix(".", value) {
 		payload := strings.NewReader("{\n  \"name\": \"" + name + "\",\n  \"ttl\": \"1800\"\n,\n  \"roundRobin\": [\n{\n  \"value\": \"" + value + "\"\n }\n]}")
-		send(url, method, payload, c)
+		send(url, POST, payload, c)
 	} else {
 		validValue := value + "."
 		payload := strings.NewReader("{\n  \"name\": \"" + name + "\",\n  \"ttl\": \"1800\"\n,\n  \"roundRobin\": [\n{\n  \"value\": \"" + validValue + "\"\n }\n]}")
-		send(url, method, payload, c)
+		send(url, POST, payload, c)
 	}
 }

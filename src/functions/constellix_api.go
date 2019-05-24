@@ -90,6 +90,25 @@ type TabsWithArrayValue struct {
 	//PoolsDetail []string
 }
 
+// Tab structure details all return values for domains
+type DomainTabs struct {
+	Id   int
+	Name string
+	// TypeId          int
+	// HasGtdRegions   bool
+	// HasGeoIP        bool
+	// NameserverGroup int
+	// Nameservers     []string
+	// CreatedTs       string
+	// DateTime        string
+	// ModifiedTs      string
+	// Note            string
+	// Version         int
+	// Status          string
+	// Tags            []string
+	// Soa             []string
+}
+
 type KeysConfig struct {
 	ApiKey    string `mapstructure:"apiKey"`
 	SecretKey string `mapstructure:"secretKey"`
