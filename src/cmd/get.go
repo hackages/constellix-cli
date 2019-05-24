@@ -104,7 +104,7 @@ func getId(cmd *cobra.Command, args []string) {
 	c := F.InitConfig(file)
 
 	nameId := F.GetId(args[0], c)
-	fmt.Println(nameID)
+	fmt.Println(nameId)
 }
 
 func init() {
