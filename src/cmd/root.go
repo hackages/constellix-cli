@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -11,7 +12,7 @@ import (
 var cfgFile string
 
 var rootCmd = &cobra.Command{
-	Use:   "constellix-cli",
+	Use: "constellix-cli",
 }
 
 func Execute() {
