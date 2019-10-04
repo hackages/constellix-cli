@@ -55,6 +55,13 @@ var (
 		Args:   cobra.MinimumNArgs(1),
 		Hidden: true,
 	}
+
+	deleteDomainCmd = &cobra.Command{
+		Use:   "domain",
+		Short: "Delete a domain by its Id",
+		Run:   deleteDomain,
+		Args:  cobra.MinimumNArgs(1),
+	}
 )
 
 func deleteCname(cmd *cobra.Command, args []string) {
@@ -92,11 +99,21 @@ func deleteNS(cmd *cobra.Command, args []string) {
 	F.DeleteNS(isDeletedById, isDeletedByName, args[0], c)
 }
 
+func deleteDomain(cmd *cobra.Command, args []string) {
+	file, _ := cmd.Flags().GetString("command-config")
+	isDeletedById, _ := cmd.Flags().GetBool("id")
+
+	c := F.InitConfig(file)
+
+	F.DeleteDomain(isDeletedById, args[0], c)
+}
+
 func init() {
 	rootCmd.AddCommand(deleteCmd)
 	deleteCmd.AddCommand(deleteaCmd)
 	deleteCmd.AddCommand(deleteCnameCmd)
 	deleteCmd.AddCommand(deletensCmd)
+	deleteCmd.AddCommand(deleteDomainCmd)
 
 	// Aliases
 	deleteCmd.AddCommand(deleteACmd)

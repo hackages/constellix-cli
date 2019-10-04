@@ -8,23 +8,23 @@ import (
 )
 
 func DeleteA(isValueId bool, isValueName bool, value string, c Config) {
-	method := "DELETE"
 	payload := strings.NewReader("")
 
 	if isValueId {
-		deleteAById(value, method, payload, c)
+		deleteAById(value, payload, c)
 	} else if isValueName {
-		deleteAByName(value, method, payload, c)
+		deleteAByName(value, payload, c)
 	} else {
-		deleteAByValue(value, method, payload, c)
+		deleteAByValue(value, payload, c)
 	}
 }
 
-func deleteAByValue(value string, method string, payload *strings.Reader, c Config) {
+// Delete A record by its ip value
+func deleteAByValue(value string, payload *strings.Reader, c Config) {
 	aID := GetId(value, c)
 	url := "https://api.dns.constellix.com/v1/domains/" + c.Constellix.Domain + "/records/A/" + strconv.Itoa(aID) + ""
 
-	send(url, method, payload, c)
+	send(url, DELETE, payload, c)
 
 	if filepath.Base(url) == "0" {
 		fmt.Println("Error: Wrong id -> ", url)
@@ -33,11 +33,12 @@ func deleteAByValue(value string, method string, payload *strings.Reader, c Conf
 	}
 }
 
-func deleteAByName(name string, method string, payload *strings.Reader, c Config) {
+// Delete A record by its name
+func deleteAByName(name string, payload *strings.Reader, c Config) {
 	aID := GetId(name, c)
 	url := "https://api.dns.constellix.com/v1/domains/" + c.Constellix.Domain + "/records/A/" + strconv.Itoa(aID) + ""
 
-	send(url, method, payload, c)
+	send(url, DELETE, payload, c)
 
 	if filepath.Base(url) == "0" {
 		fmt.Println("Error: Wrong id -> ", url)
@@ -46,10 +47,11 @@ func deleteAByName(name string, method string, payload *strings.Reader, c Config
 	}
 }
 
-func deleteAById(aID string, method string, payload *strings.Reader, c Config) {
+// Delete A record by its id
+func deleteAById(aID string, payload *strings.Reader, c Config) {
 	url := "https://api.dns.constellix.com/v1/domains/" + c.Constellix.Domain + "/records/A/" + aID
 
-	send(url, method, payload, c)
+	send(url, DELETE, payload, c)
 
 	if filepath.Base(url) == "0" {
 		fmt.Println("Error: Wrong id -> ", url)
@@ -58,10 +60,10 @@ func deleteAById(aID string, method string, payload *strings.Reader, c Config) {
 	}
 }
 
+// Create A record with an optional name
 func CreateA(ip string, name string, c Config) {
 	url := "https://api.dns.constellix.com/v1/domains/" + c.Constellix.Domain + "/records/A"
-	method := "POST"
 	payload := strings.NewReader("{\n  \"name\": \"" + name + "\",\n  \"ttl\": \"1800\"\n,\n  \"roundRobin\": [\n{\n  \"value\": \"" + ip + "\"\n }\n]}")
 
-	send(url, method, payload, c)
+	send(url, POST, payload, c)
 }

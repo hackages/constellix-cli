@@ -55,6 +55,13 @@ var (
 		Hidden: true,
 		Run:    createNS,
 	}
+
+	createDomainCmd = &cobra.Command{
+		Use:   "domain",
+		Short: "Create a domain with one or multiple names",
+		Args:  cobra.MinimumNArgs(1),
+		Run:   createDomain,
+	}
 )
 
 func createCname(cmd *cobra.Command, args []string) {
@@ -86,11 +93,20 @@ func createNS(cmd *cobra.Command, args []string) {
 	F.CreateNS(args[0], name, c)
 }
 
+func createDomain(cmd *cobra.Command, args []string) {
+	file, _ := cmd.Flags().GetString("command-config")
+
+	c := F.InitConfig(file)
+
+	F.CreateDomain(args, c)
+}
+
 func init() {
 	rootCmd.AddCommand(createCmd)
 	createCmd.AddCommand(createCnameCmd)
 	createCmd.AddCommand(createaCmd)
 	createCmd.AddCommand(creatensCmd)
+	createCmd.AddCommand(createDomainCmd)
 
 	// Aliases
 	createCmd.AddCommand(createCNAMECmd)
